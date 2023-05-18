@@ -99,7 +99,7 @@ namespace OpenCV
         { 
             System.DateTime currentTime = new System.DateTime();
             currentTime = System.DateTime.Now;
-            string logFilePath = "Log\\"+ currentTime.Year.ToString()+"-"+ currentTime.Day.ToString() + "-" + currentTime.Hour.ToString() + "-" + currentTime.Minute.ToString() + "-" + currentTime.Second.ToString() + @".avi";
+            string logFilePath = "Log\\"+ currentTime.Year.ToString()+"-"+currentTime.Month.ToString() + "-"+currentTime.Day.ToString() + "    " + currentTime.Hour.ToString() + "-" + currentTime.Minute.ToString() + "-" + currentTime.Second.ToString() + @".avi";
             return logFilePath;
         }
         private void button1_Click(object sender, EventArgs e)
