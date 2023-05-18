@@ -6,7 +6,12 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>wechat_logo.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="wechat_logo.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="OpenCvSharp4.Extensions" Version="4.6.0.20220608" />

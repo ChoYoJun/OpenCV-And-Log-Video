@@ -2,6 +2,8 @@ using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -11,6 +13,13 @@ namespace OpenCV
 {
     public partial class Form1 : Form
     {
+        [DllImport("User32.dll ", EntryPoint = "SetParent")]
+        private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+        [DllImport("user32.dll ", EntryPoint = "ShowWindow")]
+        public static extern int ShowWindow(IntPtr hwnd, int nCmdShow);
+        [DllImport("user32.dll")]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndlnsertAfter, int X, int Y, int cx, int cy, uint Flags);
+
         public Form1()
         {
             InitializeComponent();
@@ -19,18 +28,6 @@ namespace OpenCV
         public VideoWriter videoWriter = new VideoWriter();
         public Mat mat = new Mat();
         public bool FlagCloseForm = false;
-        private void bt_OpenCamera_Click(object sender, EventArgs e)
-        {
-            if (CameraWorker.IsBusy)
-            {
-                closeCamera();
-            }
-            else
-            {
-                openCamera();
-            }
-        }
-
         private void openCamera()
         {
 
@@ -102,6 +99,18 @@ namespace OpenCV
             string logFilePath = "Log\\"+ currentTime.Year.ToString()+"-"+currentTime.Month.ToString() + "-"+currentTime.Day.ToString() + "    " + currentTime.Hour.ToString() + "-" + currentTime.Minute.ToString() + "-" + currentTime.Second.ToString() + @".avi";
             return logFilePath;
         }
+
+        private void bt_OpenCamera_Click(object sender, EventArgs e)
+        {
+            if (CameraWorker.IsBusy)
+            {
+                closeCamera();
+            }
+            else
+            {
+                openCamera();
+            }
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             Thread thread = new Thread(RecordVideo);
@@ -129,7 +138,6 @@ namespace OpenCV
             }
             Thread thread = new Thread(RecordVideo);
             thread.Start();
-
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -139,6 +147,22 @@ namespace OpenCV
             videoWriter.Release();
             mat.Release();
             Cv2.DestroyAllWindows();
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+            Process cmdP = new Process();
+            cmdP.StartInfo.FileName = "C:\\Program Files (x86)\\Tencent\\WeChat\\WeChat.exe";
+            cmdP.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Minimized;
+            cmdP.Start();
+            Thread.Sleep(200);
+            SetWindowPos(cmdP.MainWindowHandle, IntPtr.Zero, this.panel1.Location.X, this.panel1.Location.Y, panel1.Width, panel1.Height, 0);
+            SetParent(cmdP.MainWindowHandle, panel1.Handle);
+            ShowWindow(cmdP.MainWindowHandle, 3);
+            //窗体最小化显示
+            this.WindowState = FormWindowState.Minimized;
+            //不显示在任务栏中
+            this.ShowInTaskbar = false;
         }
     }
 }
